@@ -1,37 +1,56 @@
 import { Component } from 'react';
+import { ContactList } from './ContactsList/ContactList';
+import { Filter } from './Filter/Filter';
+import { ContactForm } from './Form/Form';
+import { Section } from './Default.styled';
 export class App extends Component {
   state = {
     contacts: [],
-    name: '',
+
+    filter: '',
   };
   onInputChange = event => {
     this.setState({
       [event.target.name]: event.target.value,
     });
   };
-  addContactToList = event => {
-    event.preventDefault();
+  addContactToList = newContact => {
+    const existingContact = this.state.contacts.find(
+      contact => contact.name === newContact.name
+    );
+    if (existingContact) {
+      alert(`${newContact.name} is already in contacts`);
+      return;
+    }
+    this.setState(prevState => {
+      return {
+        contacts: [...prevState.contacts, newContact],
+      };
+    });
+  };
+  filterByName = event => {
+    this.setState({ [event.target.name]: event.target.value });
+  };
+  onDeleteContact = id => {
+    this.setState(prevState => {
+      return {
+        contacts: prevState.contacts.filter(contact => contact.id !== id),
+      };
+    });
   };
   render() {
     return (
-      <div>
-        <form>
-          <label>
-            <input
-              onChange={this.onInputChange}
-              type="text"
-              name="name"
-              pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-              title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-              required
-            />
-          </label>
-          <button type="submit" onSubmit={this.addContactToList}>
-            Add contact
-          </button>
-        </form>
-        <ul></ul>
-      </div>
+      <Section>
+        <h2>Phoneboock</h2>
+        <ContactForm addContact={this.addContactToList} />
+        <h2>Contacts</h2>
+        <Filter filter={this.filterByName} />
+        <ContactList
+          contacts={this.state.contacts}
+          filterValue={this.state.filter}
+          deleteContact={this.onDeleteContact}
+        />
+      </Section>
     );
   }
 }
