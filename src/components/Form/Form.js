@@ -1,7 +1,7 @@
 import { Formik, ErrorMessage } from 'formik';
 import { nanoid } from 'nanoid';
 import { Form, Field, Label, Section, Button } from './Form.styled';
-import * as Yup from 'yup';
+// import * as Yup from 'yup';
 // import { nanoid } from 'nanoid';
 export const ContactForm = ({ addContact }) => {
   const onSubmit = (values, { resetForm }) => {
